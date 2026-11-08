@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "Miezonauten – Das Pfoten-Abenteuer",
+  "short_name": "Miezonauten",
+  "description": "Ein kuscheliges Katzen-Plattformspiel, auch offline spielbar.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#fffaf2",
+  "theme_color": "#fff4df",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

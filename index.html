@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#fff4df" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>Miezonauten – Das Pfoten-Abenteuer</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="topbar">
+        <div class="brand-mark" aria-hidden="true">🐾</div>
+        <div>
+          <p class="eyebrow">EIN KLEINES PFOTEN-ABENTEUER</p>
+          <h1>Miezonauten</h1>
+        </div>
+        <div class="top-note">Schnurrig. Flauschig. Mutig.</div>
+        <button id="sound-toggle" class="sound-toggle" type="button" aria-label="Ton ausschalten" aria-pressed="true" title="Ton an/aus">🔊</button>
+      </header>
+
+      <section class="game-card" aria-label="Miezonauten-Spiel">
+        <div class="hud">
+          <div class="hud-leading">
+            <div class="hud-chip"><span class="hud-icon">🐟</span><span id="fish-count">0 / 12</span></div>
+            <button id="hud-return-to-menu-button" class="hud-menu-button hidden" type="button">↩ Menü</button>
+          </div>
+          <div class="level-name" id="level-name">LEVEL 1/6 · WOLKENPFOTEN-INSEL</div>
+          <div class="hud-chip"><span class="hud-icon">♥</span><span id="life-count">3</span></div>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="game" width="960" height="540" aria-label="Plattformspiel: Sammle Fische und erreiche das Wollschloss"></canvas>
+          <div class="powerup-display" id="powerup-display" aria-live="polite"><span id="powerup-icon">✨</span><span id="powerup-label">Kein Power-up</span><kbd>Y</kbd></div>
+          <div class="intro-card" id="intro-card">
+            <div class="intro-cat" aria-hidden="true">🐱</div>
+            <p class="eyebrow">DEIN ABENTEUER WARTET</p>
+            <h2>Auf die Pfoten,<br />fertig, Miau!</h2>
+            <p>Spring durch sechs flauschige Welten und stoß von unten gegen ?-Blöcke. Flugkätzchen patrouillieren nur seitwärts — spring ihnen auf den Kopf! Mit Flug-Pfoten kannst du 10 Sekunden fliegen: Leertaste zum Aufsteigen halten.</p>
+            <div class="player-controls">
+              <span id="active-player-label" aria-live="polite">Kein Spieler ausgewählt</span>
+              <button id="choose-player-button" class="player-select-button" type="button">Spieler wählen</button>
+            </div>
+            <button id="start-button" class="primary-button">Lospfoteln <span aria-hidden="true">→</span></button>
+            <button id="continue-button" class="secondary-button hidden" type="button">💾 Weiterspielen</button>
+            <button id="open-shop-button" class="shop-open-button" type="button" disabled>🐟 Fisch-Shop <span id="shop-wallet">0</span></button>
+            <div class="key-hint">← → bewegen <span>·</span> Leertaste springen <span>·</span> Y Power-up</div>
+            <div class="save-hint">💾 Fortschritt wird automatisch auf diesem Gerät gespeichert.</div>
+          </div>
+          <section id="player-panel" class="player-panel hidden" aria-labelledby="player-panel-title" aria-modal="true" role="dialog">
+            <header class="player-panel-header">
+              <div><p class="eyebrow">DEIN ABENTEUER, DEIN ACCOUNT</p><h2 id="player-panel-title">Spieler wählen</h2></div>
+              <button id="close-player-panel-button" class="shop-close-button" type="button" aria-label="Spielerauswahl schließen">×</button>
+            </header>
+            <p class="player-panel-description">Jeder Spieler hat eigene Fische, Käufe und Spielstände. Die Bestenliste ist für alle gemeinsam.</p>
+            <div id="player-list" class="player-list"></div>
+            <button id="add-player-button" class="add-player-button" type="button">＋ Spieler hinzufügen</button>
+            <form id="player-form" class="player-form hidden">
+              <label for="new-player-name">Name des Spielers</label>
+              <div class="player-form-entry"><input id="new-player-name" name="new-player-name" maxlength="16" placeholder="Spielername" required /><button class="primary-button" type="submit">Hinzufügen</button></div>
+            </form>
+            <p id="player-limit-message" class="player-limit-message hidden">Es können höchstens 10 Spieler angelegt werden.</p>
+          </section>
+          <section id="shop-panel" class="shop-panel hidden" aria-labelledby="shop-title" aria-modal="true" role="dialog">
+            <header class="shop-header">
+              <div><p class="eyebrow">MACH DEINE MIEZ EINZIGARTIG</p><h2 id="shop-title">Fisch-Shop</h2></div>
+              <div class="shop-wallet">🐟 <span id="shop-balance">0</span></div>
+              <button id="close-shop-button" class="shop-close-button" type="button" aria-label="Shop schließen">×</button>
+            </header>
+            <p class="shop-description">Gib gesammelte Fische für Fellfarben, Haustiere und dauerhafte Fähigkeiten aus. Käufe bleiben gespeichert.</p>
+            <div id="color-shop-list" class="color-shop-list"></div>
+            <div class="shop-section-heading"><h3>Accessoires &amp; Freunde</h3><span>Zum Ausrüsten anklicken</span></div>
+            <div id="accessory-shop-list" class="color-shop-list accessory-shop-list"></div>
+            <div class="shop-section-heading"><h3>Fähigkeiten</h3><span>Dauerhafte Verbesserungen · je 100 🐟</span></div>
+            <div id="ability-shop-list" class="color-shop-list accessory-shop-list"></div>
+          </section>
+          <div class="result-card hidden" id="result-card">
+            <div class="result-emoji" id="result-emoji">🎉</div>
+            <p class="eyebrow" id="result-eyebrow">LEVEL GESCHAFFT</p>
+            <h2 id="result-title">Miau-tastisch!</h2>
+            <p id="result-copy">Weiter geht's zum nächsten Level!</p>
+            <form id="score-form" class="score-form hidden">
+              <label for="player-name">Dein Name für die Bestenliste</label>
+              <div class="score-entry"><input id="player-name" name="player-name" maxlength="16" placeholder="Miez Name" required /><button class="primary-button" type="submit">Eintragen</button></div>
+            </form>
+            <button id="next-level-button" class="primary-button">Nächstes Level <span aria-hidden="true">→</span></button>
+            <button id="restart-button" class="secondary-button hidden">Nochmal von vorn ↻</button>
+            <button id="return-to-menu-button" class="secondary-button hidden" type="button">Zurück zum Menü</button>
+          </div>
+        </div>
+
+        <footer class="game-footer">
+          <span><kbd>←</kbd> <kbd>→</kbd> laufen</span>
+          <span><kbd>Leertaste</kbd> springen</span>
+          <span><kbd>Y</kbd> Power-up nutzen</span>
+          <span class="footer-tip">Tipp: Du kannst auch mit A / D spielen.</span>
+        </footer>
+      </section>
+
+      <div class="touch-controls" aria-label="Touch-Steuerung">
+        <button data-control="left" aria-label="Nach links">←</button>
+        <button data-control="right" aria-label="Nach rechts">→</button>
+        <button data-control="jump" aria-label="Springen">↑</button>
+        <button data-powerup aria-label="Power-up nutzen">✨</button>
+      </div>
+
+      <section class="leaderboard" aria-labelledby="leaderboard-title">
+        <div class="leaderboard-heading">
+          <div><p class="eyebrow">RUHM &amp; THUNFISCH</p><h2 id="leaderboard-title">Pfoten-Bestenliste</h2></div>
+          <span class="leaderboard-badge">🏆 TOP 10</span>
+        </div>
+        <ol id="leaderboard-list" class="leaderboard-list" aria-live="polite"></ol>
+      </section>
+
+      <p class="page-caption">Eine kuschelige Reise von Pfote zu Pfote <span aria-hidden="true">✦</span></p>
+    </main>
+    <script src="game.js"></script>
+  </body>
+</html>
