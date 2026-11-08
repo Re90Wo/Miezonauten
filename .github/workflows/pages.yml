@@ -25,16 +25,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: |
-            index.html
-            style.css
-            game.js
-            manifest.json
-            icon.svg
-            sw.js
+          path: .
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
